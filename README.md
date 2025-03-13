@@ -75,7 +75,7 @@ Then I populated src/input.css with *only* this content (the correct way for Tai
 ```
 
 
-Next I added a custom build step to package.json's scripts section, and made the default build and run commands call it first.  Note that with this custom build step for the CSS string, we aren't actually using postcss.config.js or een tailwind.config.js.  Version 4 of the tailwind CLI (I believe) ignores that tailwind.config.js parameter.  And tailwind CLI has built-in postcss and autoprefixer so it doesn't actually reference the postcss.config.js file.  But, I included it in the project in case they fix this Plasmo build issue so that it'll be easier for you to stop using this custom "build:styles" build step.
+Next I added a custom build step to package.json's scripts section, and made the default build and run commands call it first.  Note that with this custom build step for the CSS string, we aren't actually using postcss.config.js or even tailwind.config.js.  Version 4 of the tailwind CLI (I believe) ignores that tailwind.config.js parameter.  And tailwind CLI has built-in postcss and autoprefixer so it doesn't actually reference the postcss.config.js file.  But, I included it in the project in case they fix this Plasmo build issue so that it'll be easier for you to stop using this custom "build:styles" build step.
 
 ```json
   "scripts": {
