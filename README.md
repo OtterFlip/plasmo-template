@@ -1,6 +1,6 @@
 # This is a basic Plasmo project with a src directory and Tailwind 4 support
 
-So it turns out that if you create a simple Plasmo project following the instructions straight from the [Plasmo](https://docs.plasmo.com/framework/customization/src#--with-src) [docs](https://docs.plasmo.com/quickstarts/with-tailwindcss#create-a-plasmo-project-with-tailwindcss), your build will fail:
+So it turns out that if you create a simple Plasmo project following the instructions straight from the [Plasmo](https://docs.plasmo.com/framework/customization/src#--with-src) [docs](https://docs.plasmo.com/quickstarts/with-tailwindcss#create-a-plasmo-project-with-tailwindcss), your build may fail (some on Windows report their builds are working, but those on macOS and Linux seem to be the ones with build failures):
 
 ```bash
 pnpm create plasmo --with-src
