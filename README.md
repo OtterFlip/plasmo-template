@@ -46,23 +46,21 @@ touch scripts/tsconfig.json
 I then added the following to the auto-generated popup.tsx to make sure Tailwind classes were being applied:
 
 ```typescript
-// I added these imports
-import type { PlasmoGetStyle } from "plasmo"
 import { stylesString } from "./stylesString"
 
-// I added a getStyle() function:
-export const getStyle: PlasmoGetStyle = () => {
+if (typeof document !== "undefined") {
     const style = document.createElement("style")
     style.textContent = stylesString
-    return style
+    document.head.appendChild(style)
 }
 
-// And I added this <div> in the TSX markup:
-
-      <div className="bg-gray-800 text-red-500 p-4">
-          This is content styled with Tailwind with gray background and red text
-      </div>
+// And I added this <div> in the TSX markup with some Tailwind classes:
+<div className="bg-gray-800 text-red-500 p-4">
+    This is content styled with Tailwind with gray background and red text
+</div>
 ```
+
+I also added a content (CSUI) file, content.tsx, and in that file I was able to actually use the getStyle() function mechanism.
 
 Next I added an input.css file:
 
