@@ -1,34 +1,104 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# This is a basic Plasmo project with a src directory and Tailwind 4 support
 
-## Getting Started
-
-First, run the development server:
+So it turns out that if you create a simple Plasmo project following the instructions straight from the [Plasmo](https://docs.plasmo.com/framework/customization/src#--with-src) [docs](https://docs.plasmo.com/quickstarts/with-tailwindcss#create-a-plasmo-project-with-tailwindcss), your build will fail:
 
 ```bash
-pnpm dev
-# or
-npm run dev
+pnpm create plasmo --with-src
+cd myextension
+pnpm install
+pnpm build
+# Build will fail with error:  ELIFECYCLE  Command failed with exit code 139.
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+or
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+```bash
+pnpm create plasmo --with-tailwindcss
+cd myextension
+pnpm install
+pnpm build
+# Build will fail with error:  ELIFECYCLE  Command failed with exit code 139.
+```
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+So here are the steps you can use to create a Plasmo project with a src directory and using Tailwind, from scratch:
 
-## Making production build
+## Project Initialization Steps
 
-Run the following:
+This project was created with the following sequence of commands, using pnpm
+
+```bash
+pnpm create plasmo
+cd plasmo-template
+mkdir src
+mv popup.tsx ./src
+pnpm install
+pnpm build
+# Above build works.  Now set up Tailwind 4 support with workaround for build failures:
+pnpm i -D tailwindcss @tailwindcss/cli postcss autoprefixer ts-node
+mkdir scripts
+touch scripts/buildStyles.ts
+touch scripts/tsconfig.json
+# Now populate the above two files with their content (copy from this project)
+# These files are used to generate a CSS string in order to work around the build crash issue
+# This string is then imported into popup - see the code in popup for further info
+```
+
+I then added the following to the auto-generated popup.tsx to make sure Tailwind classes were being applied:
+
+```typescript
+// I added these imports
+import type { PlasmoGetStyle } from "plasmo"
+import { stylesString } from "./stylesString"
+
+// I added a getStyle() function:
+export const getStyle: PlasmoGetStyle = () => {
+    const style = document.createElement("style")
+    style.textContent = stylesString
+    return style
+}
+
+// And I added this <div> in the TSX markup:
+
+      <div className="bg-gray-800 text-red-500 p-4">
+          This is content styled with Tailwind with gray background and red text
+      </div>
+```
+
+Next I added an input.css file:
+
+```bash
+touch src/input.css
+```
+
+Then I populated src/input.css with *only* this content (the correct way for Tailwind 4):
+
+```css
+@import "tailwindcss";
+```
+
+
+Next I added a custom build step to package.json's scripts section, and made the default build and run commands call it first.  Note that with this custom build step for the CSS string, we aren't actually using postcss.config.js or een tailwind.config.js.  Version 4 of the tailwind CLI (I believe) ignores that tailwind.config.js parameter.  And tailwind CLI has built-in postcss and autoprefixer so it doesn't actually reference the postcss.config.js file.  But, I included it in the project in case they fix this Plasmo build issue so that it'll be easier for you to stop using this custom "build:styles" build step.
+
+```json
+  "scripts": {
+    "build:styles": "ts-node --compilerOptions '{\"module\":\"commonjs\"}' scripts/buildStyles.ts",
+    "dev": "pnpm build:styles && plasmo dev",
+    "build": "pnpm build:styles && plasmo build",
+    "package": "plasmo package"
+  },
+```
+
+Finally, I built the project:
 
 ```bash
 pnpm build
-# or
-npm run build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+At this point I noticed that the Tailwind classes weren't having any effect in the popup.  I then added a content CSUI (contents/content.tsx) with some Tailwind styling and the Tailwind classes DID work for that UI.
 
-## Submit to the webstores
+## TODO
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
-# plasmo-template
+-[ ] Figure out why the Tailwind classes are having no effect on the popup.tsx when they are working for the CSUI (content.tsx).
+
+
+
