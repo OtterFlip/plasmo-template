@@ -94,11 +94,5 @@ Finally, I built the project:
 pnpm build
 ```
 
-At this point I noticed that the Tailwind classes weren't having any effect in the popup.  I then added a content CSUI (contents/content.tsx) with some Tailwind styling and the Tailwind classes DID work for that UI.
-
-## TODO
-
--[ ] Figure out why the Tailwind classes are having no effect on the popup.tsx when they are working for the CSUI (content.tsx).
-
-
+For reasons unknown to me, the PlasmoGetStyle() type of function in the popup does not work (the Tailwind classes will have no effect in popup.tsx using that method), and so I have a simple workaround for that as well, in popup.tsx, which does work with Tailwind.
 
