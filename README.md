@@ -43,6 +43,8 @@ touch scripts/tsconfig.json
 # This string is then imported into popup - see the code in popup for further info
 ```
 
+The scripts/buildStyles.ts and scripts/tsconfig.json files above are really the most important part of this project because they embody the code that works around the build-crash issue.  They're the code that generates the CSS string (containing all of the Tailwind classes you're using) which can be succeessfully imported into your various .tsx UI files.
+
 I then added the following to the auto-generated popup.tsx to make sure Tailwind classes were being applied:
 
 ```typescript
